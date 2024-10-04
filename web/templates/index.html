@@ -1,0 +1,14 @@
+{% extends 'base.html' %}
+
+{% block title %}
+홈
+{% endblock %}
+
+{% block content %}
+<h1>실험 번호 입력</h1>
+<form action="/load" method="POST">
+    <label for="experiment_number">실험 번호:</label>
+    <input type="number" id="experiment_number" name="experiment_number" required>
+    <button type="submit">불러오기</button>
+</form>
+{% endblock %}

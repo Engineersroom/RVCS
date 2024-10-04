@@ -1,0 +1,12 @@
+SV PV,SV,RV PV,HH,High,Low,LL,AlarmActive,ErrorRate
+SVtest,1,RVtest,3,2,-1,-2,1,5
+SVtest1,1,RVtest1,100,10,5,1,1,5
+SVtest2,1,RVtest2,100,10,5,1,1,5
+SVtest3,1,RVtest3,100,10,5,1,1,5
+SVtest4,1,RVtest4,100,10,5,1,1,5
+SVtest5,1,RVtest5,100,10,5,1,1,5
+SVtest6,1,RVtest6,100,10,5,1,1,5
+SVtest7,1,RVtest7,100,10,5,1,1,5
+SVtest8,1,RVtest8,100,10,5,1,1,5
+SVtest9,1,RVtest9,100,10,5,1,1,5
+SVtest10,1,RVtest10,100,10,5,1,1,5

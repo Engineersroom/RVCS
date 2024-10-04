@@ -1,0 +1,94 @@
+{% extends 'base.html' %}
+
+{% block title %}
+PV 모니터링
+{% endblock %}
+
+{% block content %}
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PV 모니터링</title>
+    <style>
+        table {
+            border-collapse: collapse;
+            width: 100%;
+        }
+
+        th, td {
+            padding: 8px;
+            text-align: center;
+            border: 1px solid black;
+        }
+
+        .alarm-5 { background-color: red; }
+        .alarm-4 { background-color: orange; }
+        .alarm-3 { background-color: lightblue; }
+        .alarm-2 { background-color: blue; }
+        .alarm-1 { background-color: white; }
+        .alarm-0 { background-color: grey; }
+    </style>
+    <script>
+        function updateMonitorData() {
+            const experimentNumber = document.getElementById('experiment_number').value;
+
+            fetch(`/get_monitor_data?experiment_number=${experimentNumber}`)
+                .then(response => response.json())
+                .then(data => {
+                    let tableBody = document.getElementById('monitor_table_body');
+                    tableBody.innerHTML = ''; // 기존 데이터를 초기화
+
+                    data.forEach(row => {
+                        let alarmClass = 'alarm-' + row.alarm_state;  // Alarm 상태에 따라 색상 설정
+                        let newRow = `<tr class="${alarmClass}">
+                            <td>${row.sv_pv}</td>
+                            <td>${row.sv}</td>
+                            <td>${row.rsv}</td>
+                            <td>${row.rv_pv}</td>
+                            <td>${row.rv}</td>
+                            <td>${row.hh}</td>
+                            <td>${row.high}</td>
+                            <td>${row.low}</td>
+                            <td>${row.ll}</td>
+                            <td>${row.alarm_state}</td>
+                        </tr>`;
+                        tableBody.innerHTML += newRow;
+                    });
+                })
+                .catch(error => console.error('Error:', error));
+        }
+
+        // 2초마다 데이터를 갱신
+        setInterval(updateMonitorData, 2000);
+
+        // 페이지가 로드되면 처음 한번 실행
+        window.onload = updateMonitorData;
+    </script>
+</head>
+<body>
+    <h1>실험 번호: <input type="number" id="experiment_number" value="1" min="1"></h1>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Set PV name</th>
+                <th>Set Value</th>
+                <th>Readback <br> Set Value</th>
+                <th>Readback<br> PV name</th>
+                <th>Readback<br> Value</th>
+                <th>HH <br> &gt;= 매우 위험 </th>
+                <th>High<br> &gt;=경고 </th>
+                <th>Low<br> &lt;=경고 </th>
+                <th>LL<br> &lt;=매우 위험</th>
+                <th>Alarm State(오름차순)</th>
+            </tr>
+        </thead>
+        <tbody id="monitor_table_body">
+            <!-- 실시간 데이터가 여기에 표시됩니다 -->
+        </tbody>
+    </table>
+</body>
+</html>
+{% endblock %}

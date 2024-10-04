@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+
+{% block title %}
+PV 모니터링
+{% endblock %}
+
+{% block content %}
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>실험 입력</title>
+</head>
+<body>
+    <h1>실험 번호 입력</h1>
+    <form action="/experiment" method="POST">
+        <label for="experiment_number">실험 번호:</label>
+        <input type="text" id="experiment_number" name="experiment_number" required>
+        <button type="submit">실험 시작</button>
+    </form>
+</body>
+</html>

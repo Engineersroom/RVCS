@@ -1,0 +1,85 @@
+{% extends 'base.html' %}
+
+{% block title %}
+CSV 파일 보기 및 수정
+{% endblock %}
+
+{% block content %}
+<h1>실험 번호: {{ experiment_number }}</h1>
+
+<!-- 실험 번호 변경을 위한 폼 -->
+<form action="/load" method="POST">
+    <label for="experiment_number">실험 번호 변경:</label>
+    <input type="number" id="experiment_number" name="experiment_number" value="{{ experiment_number }}" min="1">
+    <button type="submit">데이터 로드</button>
+</form>
+
+<!-- CSV 데이터를 출력하는 테이블 -->
+<h2>CSV 파일 데이터</h2>
+<table border="1">
+    <tr>
+        <th>SV PV</th>
+        <th>SV</th>
+        <th>RV PV</th>
+        <th>HH</th>
+        <th>High</th>
+        <th>Low</th>
+        <th>LL</th>
+        <th>AlarmActive</th>
+        <th>ErrorRate (%)</th>
+        <th>삭제</th> <!-- 삭제 버튼을 위한 열 -->
+    </tr>
+    {% for row_index, row in enumerate(data[1:]) %} <!-- 첫 행은 헤더이므로 제외 -->
+    <tr>
+        {% for item in row %}
+        <td>{{ item }}</td>
+        {% endfor %}
+        <td>
+            <!-- 각 행에 삭제 버튼 추가 -->
+            <form action="/delete" method="POST" style="display:inline;">
+                <input type="hidden" name="experiment_number" value="{{ experiment_number }}">
+                <input type="hidden" name="row_index" value="{{ row_index + 1 }}"> <!-- row_index + 1 to match the CSV index -->
+                <button type="submit">삭제</button>
+            </form>
+        </td>
+    </tr>
+    {% endfor %}
+</table>
+
+<h2>새로운 값 추가</h2>
+<!-- 값 추가 테이블 -->
+<form action="/add" method="POST">
+    <input type="hidden" name="experiment_number" value="{{ experiment_number }}">
+    <table border="1">
+        <tr>
+            <th>SV PV</th>
+            <th>SV</th>
+            <th>RV PV</th>
+            <th>HH</th>
+            <th>High</th>
+            <th>Low</th>
+            <th>LL</th>
+            <th>AlarmActive</th>
+            <th>ErrorRate (%)</th>
+        </tr>
+        <tr>
+            <td><input type="text" name="sv_pv" placeholder="SV PV" required></td>
+            <td><input type="text" name="sv" placeholder="SV" required></td>
+            <td><input type="text" name="rv_pv" placeholder="RV PV" required></td>
+            <td><input type="text" name="hh" placeholder="HH" required></td>
+            <td><input type="text" name="high" placeholder="High" required></td>
+            <td><input type="text" name="low" placeholder="Low" required></td>
+            <td><input type="text" name="ll" placeholder="LL" required></td>
+            <td>
+                <select name="alarm_active" required>
+                    <option value="0">Inactive</option>
+                    <option value="1">Active</option>
+                </select>
+            </td>
+            <td><input type="number" name="error_rate" placeholder="ErrorRate (%)" min="0" max="100" required></td>
+        </tr>
+    </table>
+    <button type="submit">추가</button>
+</form>
+
+{% endblock %}
