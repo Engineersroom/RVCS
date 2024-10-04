@@ -81,27 +81,30 @@ PV 모니터링 및 실험 실행/정지
 
         // 서버 상태를 주기적으로 가져와 버튼 및 상태를 업데이트하는 함수
         function updateState() {
-            fetch('/get_experiment_state')
-                .then(response => response.json())
-                .then(data => {
-                    const state = data.status;
-                    const experimentNumber = data.experiment_number;
+        fetch('/get_experiment_state')
+            .then(response => response.json())
+            .then(data => {
+                const state = data.status;
+                const experimentNumber = data.experiment_number;
 
-                    // 상태에 따라 버튼과 상태 표시를 업데이트
-                    if (state === 1) {
-                        document.getElementById('stop_button').style.display = 'inline';
-                        document.getElementById('start_button').style.display = 'none';
-                        document.getElementById('status_indicator').className = 'status-indicator status-running';
-                        document.getElementById('status_indicator').innerText = 'Running';
-                    } else {
-                        document.getElementById('stop_button').style.display = 'none';
-                        document.getElementById('start_button').style.display = 'inline';
-                        document.getElementById('status_indicator').className = 'status-indicator status-stopped';
-                        document.getElementById('status_indicator').innerText = 'Stop';
-                    }
-                })
-                .catch(error => console.error('Error:', error));
-        }
+                // 상태에 따라 버튼과 상태 표시를 업데이트
+                if (state === 1) {
+                    document.getElementById('stop_button').style.display = 'inline';
+                    document.getElementById('start_button').style.display = 'none';
+                    document.getElementById('status_indicator').className = 'status-indicator status-running';
+                    document.getElementById('status_indicator').innerText = 'Running';
+                } else {
+                    document.getElementById('stop_button').style.display = 'none';
+                    document.getElementById('start_button').style.display = 'inline';
+                    document.getElementById('status_indicator').className = 'status-indicator status-stopped';
+                    document.getElementById('status_indicator').innerText = 'Stop';
+                }
+
+                // 현재 진행 중인 실험 번호 업데이트
+                document.getElementById('current_experiment_label').innerText = `(현재 진행 중인 실험 번호: ${experimentNumber})`;
+            })
+            .catch(error => console.error('Error:', error));
+    }
 
         // 실험 실행 요청 함수
         function startExperiment() {
@@ -163,6 +166,7 @@ PV 모니터링 및 실험 실행/정지
 
     <!-- 실험 상태 표시 -->
     <span id="status_indicator" class="status-indicator status-stopped">Stop</span>
+    <span id="current_experiment_label" style="font-weight: bold; margin-left: 10px;">(실험 번호: -)</span> <!-- 실험 번호 표시 추가 -->
 
     <table>
         <thead>

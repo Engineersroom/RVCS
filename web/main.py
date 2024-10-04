@@ -76,7 +76,7 @@ def is_valid_state_csv(filename):
 def experiment_loop():
     global running
     while running:
-        state, experiment_number = get_state()
+        experiment_number, state = get_state()
         if state == 1:
             # state.csv에 저장된 값으로 caput 실행
             filename = f'experiment_{experiment_number}.csv'
@@ -131,7 +131,7 @@ def update_experiment_state(experiment_number, status):
 @app.route('/get_experiment_state', methods=['GET'])
 def get_experiment_state():
     try:
-        state, experiment_number = get_state()  # 이 함수는 올바른 state와 experiment_number를 가져온다고 가정
+        experiment_number, state = get_state()  # 이 함수는 올바른 state와 experiment_number를 가져온다고 가정
         return jsonify({
             "status": state, 
             "experiment_number": experiment_number
@@ -159,7 +159,7 @@ def experiment():
             reader = csv.reader(file)
             data = list(reader)[1:]  # 첫 번째 줄은 헤더이므로 제외
 
-    state, _ = get_state()
+    experiment_number, state= get_state()
     return render_template('experiment.html', experiment_number=experiment_number, data=data, state=state)
 
 # Alarm 상태 계산 함수
@@ -179,7 +179,7 @@ def calculate_alarm_state(hh, high, low, ll, alarm_active, rv):
                 return 3  # 하늘 
         return 1  # 정상 상태
     except ValueError:
-        return 6  # 변환 오류 시 기본 상태
+        return 0  # 변환 오류 시 기본 상태
 
 # PV 모니터 페이지
 @app.route('/pv_monitor', methods=['GET', 'POST'])
@@ -267,7 +267,7 @@ def get_state():
             # 값 변환 중 문제가 생기면 기본값 반환
             return 0, 1
 
-        return experiment_status, experiment_number
+        return experiment_number, experiment_status
 
 # state.csv 파일에 상태 저장
 def set_state(status, experiment_number):
@@ -308,7 +308,7 @@ def get_monitor_data():
             "ll": row[6],
             "alarm_state": alarm_state
         })
-    sorted_data = sorted(table_data, key=lambda x: x['alarm_state'], reverse=True)
+        sorted_data = sorted(table_data, key=lambda x: x['alarm_state'], reverse=True)
 
     return jsonify(sorted_data)
 
@@ -323,7 +323,7 @@ def start_experiment():
         return jsonify({"success": False, "error": "실험 번호가 제공되지 않았습니다."})
 
     # 실험 상태 업데이트
-    set_state(1, experiment_number)  # 1: 실행 상태로 업데이트
+    set_state(experiment_number,1)  # 1: 실행 상태로 업데이트
     if not running:
         running = True
         threading.Thread(target=experiment_loop).start()
