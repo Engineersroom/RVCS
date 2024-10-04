@@ -172,11 +172,11 @@ def calculate_alarm_state(hh, high, low, ll, alarm_active, rv):
             if rv > float(hh):
                 return 5  # 빨강
             elif rv > float(high):
-                return 4  # 주황
+                return 3  # 주황
             elif rv < float(ll):
-                return 2 # 파랑 
+                return 4 # 파랑 
             elif rv < float(low):
-                return 3  # 하늘 
+                return 2  # 하늘 
         return 1  # 정상 상태
     except ValueError:
         return 0  # 변환 오류 시 기본 상태
